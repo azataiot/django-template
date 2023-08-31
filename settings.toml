@@ -67,6 +67,3 @@ allow_credentials = true
 allow_headers = ["*"]
 allow_methods = ["*"]
 max_age = 86400
-
-
-
