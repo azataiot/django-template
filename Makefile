@@ -82,11 +82,14 @@ pr:
 ## Update dev branch from main
 update-dev:
 	@echo "Updating dev branch from main..."
-	@# Make sure the main branch is up to date with origin main
-	@git checkout main
-	@git pull origin main
+	@git config pull.rebase false
+	@git branch -D update-dev
 	@# Create a new branch from main
 	@git checkout -b update-dev
+	@git pull origin main
+	@git add .
+	@git commit -m "update dev from main"
+	@$(MAKE) push
 	@# Call the prdev target to create a new PR to dev from the current branch
 	@$(MAKE) prdev
 	@# If everything is okay, call the remove-branch target on itself
