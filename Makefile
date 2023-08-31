@@ -96,6 +96,7 @@ update-dev:
 	@$(MAKE) remove-branch
 
 
+
 # -- Django --
 ## Generate secret key
 django-secret-key:
