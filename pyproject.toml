@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "django-template"
+version = "0.1.0"
+description = "A streamlined Django template designed for practical, real-world applications, with essential configurations and best practices integrated out of the box."
+authors = ["Azat <8280770+azataiot@users.noreply.github.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^4.2.4"
+django-environ = "^0.11.1"
+pillow = "^10.0.0"
+django-allauth = "^0.55.2"
+django-cors-headers = "^4.2.0"
+gunicorn = "^21.2.0"
+psycopg2-binary = "^2.9.7"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.7.0"
+isort = "^5.12.0"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.4.0"
+
+
+[tool.poetry.group.github.dependencies]
+requests = "^2.31.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
