@@ -79,24 +79,6 @@ pr:
 	fi
 
 
-## Update dev branch from main
-update-dev:
-	@echo "Updating dev branch from main..."
-	@# delete and prepare the dev-update branch
-	@git branch -D update-dev
-	@# Make sure the main branch is up to date with origin main
-	@git fetch origin main
-	@# Create a new branch from main
-	@git checkout -b update-dev
-	@# Merge main into the new branch
-	@git merge --no-ff main -m "fetch 'main' into update-dev"
-	@# Call the prdev target to create a new PR to dev from the current branch
-	@$(MAKE) prdev
-	@# If everything is okay, call the remove-branch target on itself
-	@$(MAKE) remove-branch
-
-
-
 # -- Django --
 ## Generate secret key
 django-secret-key:
