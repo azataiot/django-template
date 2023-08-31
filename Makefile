@@ -90,8 +90,7 @@ update-dev:
 	@# Call the prdev target to create a new PR to dev from the current branch
 	@$(MAKE) prdev
 	@# If everything is okay, call the remove-branch target on itself
-	@$(MAKE) remove-branch
-	@echo "Done!"
+	@echo "If everything is okay, call the remove-branch target on itself"
 
 
 # -- Django --
