@@ -66,17 +66,14 @@ remove-branch:
 
 ## Create PR from dev to main branch
 pr:
-	@if [ "$(shell git rev-parse --abbrev-ref HEAD)" = "dev" ]; then \
-		if git diff-index --quiet HEAD --; then \
-			echo "Creating PR from dev to main branch..."; \
-			gh pr create -f --base main --head dev; \
-			echo "Done!"; \
-		else \
-			echo "Uncommitted changes found. Please commit your changes before creating a PR."; \
-		fi \
+	if git diff-index --quiet HEAD --; then \
+		echo "Creating PR from to main branch..."; \
+		gh pr create -f --base main --head $(shell git rev-parse --abbrev-ref HEAD); \
+		echo "Done!"; \
 	else \
-		echo "Current branch is not dev. Please switch to the dev branch before creating a PR to main."; \
+		echo "Uncommitted changes found. Please commit your changes before creating a PR."; \
 	fi
+
 
 ## Update dev branch from main
 update-dev:
