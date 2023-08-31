@@ -85,7 +85,7 @@ update-dev:
 			echo "Updating dev branch..."; \
 			git pull origin main; \
 			echo "Done!"; \
-			@$(MAKE) push \
+			$(MAKE) push \
 		else \
 			echo "Uncommitted changes found. Please commit your changes before updating dev."; \
 		fi \
