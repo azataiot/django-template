@@ -78,6 +78,19 @@ pr:
 		echo "Current branch is not dev. Please switch to the dev branch before creating a PR to main."; \
 	fi
 
+## Update dev branch
+update-dev:
+	@if [ "$(shell git rev-parse --abbrev-ref HEAD)" = "dev" ]; then \
+		if git diff-index --quiet HEAD --; then \
+			echo "Updating dev branch..."; \
+			git pull origin main; \
+			echo "Done!"; \
+		else \
+			echo "Uncommitted changes found. Please commit your changes before updating dev."; \
+		fi \
+	else \
+		echo "Current branch is not dev. Please switch to the dev branch before updating dev."; \
+	fi
 
 # -- Django --
 ## Generate secret key
