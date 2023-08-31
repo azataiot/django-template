@@ -1,0 +1,50 @@
+name: Check Bootstrap Updates
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Run every Sunday at midnight
+  workflow_dispatch: # to trigger manually
+
+jobs:
+  update-bootstrap:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install Dependencies
+        run: |
+          pip install requests
+
+      - name: Check and Update Bootstrap
+        run: python scripts/update_bootstrap.py
+
+      - name: Check for Changes
+        id: git-check
+        run: |
+          git diff --exit-code || echo "found-changes=true" >> $GITHUB_ENV
+        continue-on-error: true
+
+      - name: Commit and Push Changes
+        if: env.found-changes == 'true'
+        run: |
+          git config --global user.name 'GitHub Bot'
+          git config --global user.email 'bot@example.com'
+          git checkout -b bootstrap-update
+          git add .
+          git commit -m "Update Bootstrap to latest version"
+          git push origin bootstrap-update
+
+      - name: Create Pull Request
+        if: env.found-changes == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: Update Bootstrap to latest version
+          body: This PR updates Bootstrap files to the latest version.
+          branch: bootstrap-update
