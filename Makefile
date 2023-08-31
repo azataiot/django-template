@@ -1,8 +1,9 @@
 .PHONY: help
 .DEFAULT_GOAL := help
+
 ## This help screen
 help:
-	@printf "Available targets:\n\n"
+	@echo "Available targets:"
 	@awk '/^[a-zA-Z\-\_0-9%:\\ ]+/ { \
 	  helpMessage = match(lastLine, /^## (.*)/); \
 	  if (helpMessage) { \
@@ -14,6 +15,17 @@ help:
 	  } \
 	} \
 	{ lastLine = $$0 }' $(MAKEFILE_LIST) | sort -u
-	@printf "\n"
 
+
+# -- Git and Github --
+## Run pre-commit hooks
+pre-commit:
+	@echo "Running pre-commit..."
+	@pre-commit run --all-files
+	@echo "Done!"
+
+# -- Django --
+## Generate secret key
+django-secret-key:
+	@python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 
