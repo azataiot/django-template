@@ -46,8 +46,8 @@ def download_and_replace_bootstrap_files(css_path, js_path, version):
 
 
 def main():
-    css_path = BASE_DIR / "app/assets/css"
-    js_path = BASE_DIR / "app/assets/js"
+    css_path = BASE_DIR / "project/assets/css"
+    js_path = BASE_DIR / "project/assets/js"
 
     latest_version = get_latest_bootstrap_version()
     current_version = get_current_bootstrap_version(css_path)
