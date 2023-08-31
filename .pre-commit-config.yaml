@@ -58,12 +58,10 @@ repos:
       - id: poetry-export
         args: [ "-f", "requirements.txt","--with","dev","--with","test", "-o", "requirements/dev-requirements.txt" ]
       - id: poetry-export
-        args: [ "-f", "requirements.txt","--only","github", "-o", ".github/requirements.txt" ]
+        args: [ "-f", "requirements.txt","--only","git", "-o", ".github/requirements.txt" ]
       - id: poetry-check
       - id: poetry-lock
 
 # sets up .pre-commit-ci.yaml to ensure pre-commit dependencies stay up to date
 ci:
   autoupdate_schedule: weekly
-  skip: [ ]
-  submodules: false

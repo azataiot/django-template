@@ -1,0 +1,69 @@
+# Django related settings for the project.
+# All configurations in this file are optional, they also can be defined in the environment variables,
+# or in the .env file (under the root of the project).
+# The environment variables have higher priority than the .env file.
+# The environment variables should be defined in the format of "<SECTION>_<SETTING>", for example, "DATABASE_ENGINE".
+# The variables inside the environ list is highly recommended to be
+# defined in the environment variables or in the .env file
+# and fails if not defined for `make production` command.
+
+[django]
+environ = ["secret_key"]
+debug = "True"
+log_level = "info"
+allowded_hosts = ["localhost", "127.0.0.1", "[::1]"]
+secret_key = "3_kqc@ig3+=@yxv8tm9!s%^d_lv-al%qvpbawt&5v5%!sj_vv1" # WARNING: keep this setting in env DJANGO_SECRET_KEY
+
+
+[database]
+environ = ["password"]
+engine = "django.db.backends.postgresql" # "django.db.backends.sqlite3"
+database = "postgres" # path to the database file if using sqlite3, such as db.sqlite3
+user = "postgres" # Not used with sqlite3.
+password = "postgres" # Not used with sqlite3.  # WARNING: keep this setting in env EMAIL_PASSWORD
+host = "localhost" # Not used with sqlite3.
+port = "5432" # Not used with sqlite3.
+
+
+[email]
+enabled = false # default is false (disabled, and print email to console)
+environ = ["password"]
+backend = "django.core.mail.backends.smtp.EmailBackend"
+host = "smtp.gmail.com"
+port = "587"
+username = "admin@localhost"
+password = "admin" # WARNING: keep this setting in env EMAIL_PASSWORD
+use_tls = true
+use_ssl = false
+from_email = "Django Template <no-reply@localhost>"
+
+[redis]
+enabled = false # default is false (disabled)
+environ = ["password"]
+host = "localhost"
+port = "6379"
+password = "" # WARNING: keep this setting in env REDIS_PASSWORD
+db = "0"
+
+[celery]
+enabled = false # default is false (disabled)
+environ = ["broker_url", "result_backend"]
+broker_url = "redis://localhost:6379/0" # WARNING: keep this setting in env CELERY_BROKER_URL
+result_backend = "redis://localhost:6379/0" # WARNING: keep this setting in env CELERY_RESULT_BACKEND
+
+
+[celery_beat]
+enabled = true
+schedule = "django_celery_beat.schedulers:DatabaseScheduler"
+
+[celery_flower]
+enabled = true
+port = "5555"
+
+[django_cors]
+enabled = true
+origin_regex_whitelist = ["^(https?://)?localhost(:[0-9]+)?$"]
+allow_credentials = true
+allow_headers = ["*"]
+allow_methods = ["*"]
+max_age = 86400
