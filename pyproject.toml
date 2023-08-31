@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-template"
-version = "0.2.0"
+version = "0.1.0"
 description = "A streamlined Django template designed for practical, real-world applications, with essential configurations and best practices integrated out of the box."
 authors = ["Azat <8280770+azataiot@users.noreply.github.com>"]
 license = "MIT"
@@ -28,16 +28,3 @@ pytest = "^7.4.0"
 
 [tool.poetry.group.git.dependencies]
 requests = "^2.31.0"
-commitizen = "^3.7.0"
-
-
-[tool.commitizen]
-name = "cz_conventional_commits"
-tag_format = "$version"
-version_scheme = "pep440"
-version_provider = "poetry"
-update_changelog_on_bump = true
-major_version_zero = true
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
