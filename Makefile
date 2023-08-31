@@ -85,13 +85,14 @@ update-dev:
 			echo "Updating dev branch..."; \
 			git pull origin main; \
 			echo "Done!"; \
-			$(MAKE) push \
+			$(MAKE) push; \
 		else \
 			echo "Uncommitted changes found. Please commit your changes before updating dev."; \
-		fi \
+		fi; \
 	else \
 		echo "Current branch is not dev. Please switch to the dev branch before updating dev."; \
 	fi
+
 
 # -- Django --
 ## Generate secret key
