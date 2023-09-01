@@ -22,7 +22,8 @@ jobs:
           LATEST_RELEASE=$(gh release list | head -n 1 | awk '{print $1}')
           # Get the list of PRs merged since the latest release
           PRS_MERGED=$(gh pr list --base main --state merged --json number,mergedAt -q ".[] | select(.mergedAt > \"$LATEST_RELEASE\") | .number")
-          echo "::set-output name=prs::$PRS_MERGED"
+          echo "PRS=$PRS_MERGED" >> $GITHUB_ENV
+
 
       - name: Create new tag
         run: |
