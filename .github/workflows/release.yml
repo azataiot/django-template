@@ -5,6 +5,7 @@ on:
     branches:
       - 'release-*'
       - 'hotfix-*'
+  workflow_dispatch: # to trigger manually
 
 jobs:
   release:
