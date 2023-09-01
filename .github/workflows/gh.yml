@@ -32,5 +32,5 @@ jobs:
       - name: gh pr create (dev)
         if: success()
         run: |
-          gh pr create --title "merge release updates" --label "update" --base "dev"
-          gh pr create --title "merge release updates" --label "update" --base "main"
+          gh pr create --fill --label "update" --base "dev"
+          gh pr create --fill --label "update" --base "main"
