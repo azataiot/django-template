@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Get the current version from pyproject.toml
-CURRENT_VERSION=$(grep -oP '(?<=version = ")[^"]*' pyproject.toml)
+CURRENT_VERSION=$(python -c "import tomllib; print(tomllib.loads(open('pyproject.toml').read())['tool']['poetry']['version'])")
+
 
 # Select branch type
 PS3="Select branch type: "
@@ -35,19 +36,19 @@ fi
 
 # Increment the version number according to PEP 440
 if [ "$BRANCH_TYPE" == "release" ]; then
+    cd scripts || exit
     NEW_VERSION=$(python -c "import increment_version; print(increment_version.increment_version('$CURRENT_VERSION', '$RELEASE_TYPE'))")
+    cd .. || exit
     BRANCH_NAME="$BRANCH_TYPE-$NEW_VERSION"
 elif [ "$BRANCH_TYPE" == "hotfix" ]; then
+    cd scripts || exit
     NEW_VERSION=$(python -c "import increment_version; print(increment_version.increment_version('$CURRENT_VERSION', 'final'))")
+    cd .. || exit
     BRANCH_NAME="$BRANCH_TYPE-$NEW_VERSION"
 elif [ "$BRANCH_TYPE" == "feature" ]; then
-    # shellcheck disable=SC2162
     read -p "Enter feature name: " FEATURE_NAME
-    # shellcheck disable=SC2001
-    # shellcheck disable=SC2086
     BRANCH_NAME="$BRANCH_TYPE-$(echo $FEATURE_NAME | sed 's/ /-/g')"
 else
-    # shellcheck disable=SC2002
     BRANCH_NAME="$BRANCH_TYPE-$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)"
 fi
 

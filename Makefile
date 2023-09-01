@@ -1,4 +1,4 @@
-.PHONY: help, pre-commit, push, prdev, remove-branch, pr, update-dev, django-secret-key, docs
+.PHONY: help, pre-commit, push, prdev, remove-branch, pr, update-dev, django-secret-key, docs, branch
 .DEFAULT_GOAL := help
 
 ## This help screen
