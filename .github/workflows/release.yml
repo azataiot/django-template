@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - 'release-*'
+      - 'hotfix-*'
+
+jobs:
+  release:
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    if: github.repository_owner == 'azataiot'
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get project version
+        id: get-project-version
+        run: |
+          echo "VERSION=$(grep -oP '(?<=version = ")[^"]*' pyproject.toml)" >> $GITHUB_ENV
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1.13.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Release ${{ env.VERSION }}
+          tag: ${{ env.VERSION }}
+          allowUpdates: true
+          generateReleaseNotes: true
+
+      - name: Create Pull Request to dev
+        uses: peter-evans/create-pull-request@v5.0.2
+        with:
+          branch: dev
+          labels: release
+
+      - name: Create Pull Request to main
+        uses: peter-evans/create-pull-request@v5.0.2
+        with:
+          branch: main
+          labels: release
+
+      - name: Delete branch
+        run: |
+          gh branch delete "${{ github.ref }}" --force
