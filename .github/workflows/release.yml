@@ -18,24 +18,30 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Get project version
         id: get-project-version
         run: |
           echo "VERSION=$(grep -oP '(?<=version = ")[^"]*' pyproject.toml)" >> $GITHUB_ENV
 
-      - name: Create or update release
-        run: |
-          gh release create "${{ env.VERSION }}" --title "Release ${GITHUB_REF##*/}" --notes "Release notes for ${GITHUB_REF##*/}"
+      - name: Create Release
+        uses: ncipollo/release-action@v1.13.0
+        with:
+          name: Release ${{ env.VERSION }}
+          allowUpdates: true
+          generateReleaseNotes: true
 
+      - name: Create Pull Request to dev
+        uses: peter-evans/create-pull-request@v5.0.2
+        with:
+          branch: dev
+          labels: release
 
-      - name: Create PR to main
-        run: |
-          gh pr create --base main --head "${{ github.ref }}" --title "Merge ${GITHUB_REF##*/} into main" --body "Merge ${GITHUB_REF##*/} into main"
-
-      - name: Create PR to dev
-        run: |
-          gh pr create --base dev --head "${{ github.ref }}" --title "Merge ${GITHUB_REF##*/} into dev" --body "Merge ${GITHUB_REF##*/} into dev"
+      - name: Create Pull Request to main
+        uses: peter-evans/create-pull-request@v5.0.2
+        with:
+          branch: main
+          labels: release
 
       - name: Delete branch
         run: |
