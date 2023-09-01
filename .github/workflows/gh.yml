@@ -1,9 +1,12 @@
-name: gh
+name: Github Automation
 on:
   push:
+    branches:
+      - 'hotfix-*'
+      - 'release-*'
 
 jobs:
-  gh:
+  release:
     if: github.repository_owner == 'azataiot' && github.repository == 'azataiot/django-template'
     env:
       GH_TOKEN: ${{ github.token }}
@@ -25,3 +28,9 @@ jobs:
       - name: gh release create
         run: |
           gh release create --generate-notes --title "Release $VERSION" "$VERSION"
+
+      - name: gh pr create (dev)
+        if: success()
+        run: |
+          gh pr create --title "merge release updates" --label "update" --base "dev"
+          gh pr create --title "merge release updates" --label "update" --base "main"
