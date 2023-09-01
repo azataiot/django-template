@@ -4,8 +4,9 @@ def increment_version(version, release_type):
 
     # Increment the appropriate part of the version number
     if release_type == "alpha":
-        if "a" in version:
-            parts[-1] = str(int(parts[-1][1:]) + 1) + "a"
+        if "a" in parts[-1]:
+            alpha_part = parts[-1][:-1]
+            parts[-1] = str(int(alpha_part) + 1) + "a"
         else:
             parts[-1] = "1a"
     elif release_type == "beta":
