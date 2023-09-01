@@ -28,7 +28,7 @@ jobs:
           python-version: '3.11'
       - name: Install & Upgrade pip
         run: python -m pip install --upgrade pip
-      - name: Install pre-commit
-        run: pip install pre-commit
+      - name: Install requirements
+        run: pip install requirements/dev-requirements.txt
       - name: Run pre-commit
         run: pre-commit run --all-files
