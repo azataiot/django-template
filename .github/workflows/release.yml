@@ -29,8 +29,8 @@ jobs:
         uses: ncipollo/release-action@v1.13.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: Release ${{ VERSION }}
-          tag: ${{ VERSION }}
+          name: Release ${{ env.VERSION }}
+          tag: ${{ env.VERSION }}
           allowUpdates: true
           generateReleaseNotes: true
 
