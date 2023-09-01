@@ -5,6 +5,9 @@ on:
 jobs:
   gh:
     if: github.repository_owner == 'azataiot' && github.repository == 'azataiot/django-template'
+    permissions:
+      issues: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
