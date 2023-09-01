@@ -36,10 +36,14 @@ jobs:
           allowUpdates: true
           generateReleaseNotes: true
 
-      - name: Commit changes
-        run: |
-          git add requirements/requirements.txt requirements/dev-requirements.txt
-          git commit -m "Update requirements.txt and dev-requirements.txt" || echo "No changes to commit"
+      - name: Create comment
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const { owner, repo, number } = context.issue;
+            const body = 'Update requirements.txt and dev-requirements.txt" || echo "No changes to commit';
+            const comment = await github.rest.issues.createComment({ owner, repo, issue_number: number, body });
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
