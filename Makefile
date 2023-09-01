@@ -93,6 +93,9 @@ update-dev:
 		echo "Current branch is not dev. Please switch to the dev branch before updating dev."; \
 	fi
 
+##
+branch:
+	scripts/create-branch.sh
 
 # -- Django --
 ## Generate secret key
