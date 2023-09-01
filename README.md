@@ -1,4 +1,22 @@
-# django-template
+<p align="center">
+  <a href="https://getbootstrap.com/">
+    <img src="docs/docs/assets/img/docs-icon-teal.png" alt="Bootstrap logo" width="200" height="165">
+  </a>
+</p>
+
+<h3 align="center">Bootstrap</h3>
+
+<p align="center">
+  Batteries included Django template designed for practical, real-world applications
+  <br>
+  <a href="#"><strong>Explore Django Template docs »</strong></a>
+  <br>
+  <br>
+</p>
+
+## django-template
+
+A streamlined Django template designed for practical, real-world applications, with essential configurations and best practices integrated out of the box.
 
 <a href="https://github.com/azataiot/django-template/generate"><img src="https://img.shields.io/badge/use%20this-template-blue?logo=github" alt="use-this-repo-badge"></a>
 [![Keep Bootstrap Updated](https://github.com/azataiot/django-template/actions/workflows/bootstrap_update.yml/badge.svg)](https://github.com/azataiot/django-template/actions/workflows/bootstrap_update.yml)
