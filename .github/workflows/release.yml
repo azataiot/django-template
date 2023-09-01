@@ -5,22 +5,30 @@ on:
     branches:
       - 'release-*'
       - 'hotfix-*'
-  workflow_dispatch: # to trigger manually
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+          sudo apt-add-repository https://cli.github.com/packages
+          sudo apt update
+          sudo apt install gh
 
       - name: Get PRs merged since last release
         id: get-prs
         run: |
           # Get the latest release
-          LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" | jq -r .tag_name)
+          LATEST_RELEASE=$(gh release list | head -n 1 | awk '{print $1}')
           # Get the list of PRs merged since the latest release
-          PRS_MERGED=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls?state=closed&base=main" | jq -r '[.[] | select(.merged_at != null) | select(.merged_at > "'$LATEST_RELEASE'") | .number]')
+          PRS_MERGED=$(gh pr list --base main --state merged --json number,mergedAt -q ".[] | select(.mergedAt > \"$LATEST_RELEASE\") | .number")
           echo "::set-output name=prs::$PRS_MERGED"
 
       - name: Create new tag
@@ -32,15 +40,15 @@ jobs:
           git push origin $CURRENT_VERSION
 
       - name: Create GitHub release
-        uses: gh-actions/github-release@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag: ${{ steps.get-version.outputs.version }}
-          title: Release ${{ steps.get-version.outputs.version }}
-          body: |
-            ## Changes
-            ${{ steps.get-prs.outputs.prs }}
+        run: |
+          gh release create $CURRENT_VERSION \
+            --title "Release $CURRENT_VERSION" \
+            --notes "## Changes\n\n${{ steps.get-prs.outputs.prs }}"
+
+      - name: Delete branch
+        run: |
+          # Delete the branch
+          git push origin --delete $GITHUB_REF
 
       - name: Create pull requests
         uses: peter-evans/create-pull-request@v3
@@ -63,8 +71,3 @@ jobs:
           body: 'Update dev branch with changes from ${{ github.ref }}'
           labels: 'update'
           draft: true
-
-      - name: Delete branch
-        run: |
-          # Delete the branch
-          git push origin --delete $GITHUB_REF
