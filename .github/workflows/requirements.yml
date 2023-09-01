@@ -62,16 +62,8 @@ jobs:
           poetry export --only main -f requirements.txt --output requirements/requirements.txt --without-hashes
           poetry export --only dev -f requirements.txt --output requirements/dev-requirements.txt --without-hashes
 
-      - name: Commit changes
+      - name: gh pr create (dev)
+        if: success()
         run: |
-          git add requirements/requirements.txt requirements/dev-requirements.txt
-          git commit -m "Update requirements.txt and dev-requirements.txt" || echo "No changes to commit"
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: Update requirements.txt and dev-requirements.txt
-          commit-message: Auto-update requirements.txt and dev-requirements.txt
-          branch: update/requirements
-          labels: update
+          gh pr create --title "merge release" --body "merging $VERSION into dev"  --label "update" --base "dev"
+          gh pr create --title "merge release" --body "merging $VERSION into dev"  --label "update" --base "main"
