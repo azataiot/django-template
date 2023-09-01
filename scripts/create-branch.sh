@@ -36,7 +36,10 @@ fi
 # Increment the version number according to PEP 440
 if [ "$BRANCH_TYPE" == "release" ] || [ "$BRANCH_TYPE" == "hotfix" ]; then
     cd scripts || exit
-    NEW_VERSION=$(python -c "import increment_version; print(increment_version.increment_version('$CURRENT_VERSION', '$RELEASE_TYPE'))")
+    if ! NEW_VERSION=$(python -c "import increment_version; print(increment_version.increment_version('$CURRENT_VERSION', '$RELEASE_TYPE'))"); then
+    echo "Error incrementing version number"
+    exit 1
+    fi
     cd .. || exit
     BRANCH_NAME="$BRANCH_TYPE-$NEW_VERSION"
 
