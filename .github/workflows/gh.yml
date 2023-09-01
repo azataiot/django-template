@@ -4,7 +4,7 @@ on:
 
 jobs:
   gh:
-    if: github.repository_owner == 'azataiot' && github.repository == 'django-template'
+    if: github.repository_owner == 'azataiot'
     runs-on: ubuntu-latest
     steps:
       - run:
