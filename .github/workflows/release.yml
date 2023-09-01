@@ -16,7 +16,7 @@ jobs:
       - name: Get project version
         id: get-project-version
         run: |
-          echo "VERSION=$(poetry version)" >> $GITHUB_ENV
+          echo "VERSION=$(grep -oP '(?<=version = ")[^"]*' pyproject.toml)" >> $GITHUB_ENV
       - name: Create or update release
         run: |
           gh release create "${{ env.VERSION }}"
