@@ -80,3 +80,9 @@ max-complexity = 10
 
 [tool.isort]
 profile = "black"
+
+# pytest.ini
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]

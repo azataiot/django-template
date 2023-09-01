@@ -60,6 +60,12 @@ lint:
 	@poetry run isort .
 	@echo "Done!"
 
+## Test code (pytest)
+test:
+	@echo "Testing code..."
+	@poetry run python -m pytest
+	@poetry run project/manage.py check
+	@echo "Done!"
 
 # -- Git and Github --
 ## Run pre-commit hooks
