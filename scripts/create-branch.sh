@@ -53,7 +53,7 @@ else
 fi
 
 # Update the version in pyproject.toml
-sed -i "s/version = \"$CURRENT_VERSION\"/version = \"$NEW_VERSION\"/" pyproject.toml
+sed -i.bak "s/version = \"$CURRENT_VERSION\"/version = \"$NEW_VERSION\"/" pyproject.toml && rm pyproject.toml.bak
 
 # Create and switch to the new branch
 git checkout -b "$BRANCH_NAME"
