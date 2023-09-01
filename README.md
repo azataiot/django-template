@@ -1,11 +1,11 @@
 
 <p align="center">
   <a href="https://github.com/azataiot/django-template/">
-    <img src="docs/docs/assets/img/docs-icon-teal-200.png" alt="Bootstrap logo" width="200" height="200">
+    <img src="docs/docs/assets/img/docs-icon-teal-200.png" alt="django-template logo" width="200" height="200">
   </a>
 </p>
 
-<h3 align="center">Bootstrap</h3>
+<h3 align="center">Django Template</h3>
 
 <div style="text-align: center;">
   Batteries included Django project template designed for practical, real-world applications
