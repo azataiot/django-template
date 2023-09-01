@@ -64,6 +64,12 @@ jobs:
           poetry export --only main -f requirements.txt --output requirements/requirements.txt --without-hashes
           poetry export --only dev -f requirements.txt --output requirements/dev-requirements.txt --without-hashes
 
+      - name: Checkout update branch
+        run: |
+          git fetch
+          git checkout update/requirements
+
+
       - name: gh pr create (dev)
         if: success()
         run: |
