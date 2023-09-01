@@ -19,11 +19,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: gh
-        run:
+        run: |
           gh auth status
       - name: Get version from pyproject.toml
         run: |
           echo "VERSION=$(grep '^version =' pyproject.toml | awk -F\" '{print $2}')" >> $GITHUB_ENV
+
+      - name: Check if release exists
+        id: check_release
+        run: |
+          if gh release view "$VERSION" > /dev/null 2>&1; then
+            echo "::set-output name=exists::true"
+          else
+            echo "::set-output name=exists::false"
+          fi
+        continue-on-error: true
+
+      - name: Delete existing release
+        if: steps.check_release.outputs.exists == 'true'
+        run: |
+          gh release delete "$VERSION" --yes
 
       - name: gh release create
         run: |
