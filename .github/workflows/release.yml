@@ -8,10 +8,6 @@ on:
 
 jobs:
   release:
-    permissions:
-      id-token: write
-      contents: read
-      pull-requests: write
     if: github.repository_owner == 'azataiot'
     runs-on: ubuntu-latest
     env:
