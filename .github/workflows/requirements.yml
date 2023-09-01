@@ -2,13 +2,13 @@ name: Export Dependencies
 
 on:
   pull_request:
+    branches:
+      - 'main'
+      - 'dev'
     paths:
       - 'pyproject.toml'
       - 'poetry.lock'
   push:
-    branches:
-      - main
-      - dev
     paths:
       - 'pyproject.toml'
       - 'poetry.lock'
