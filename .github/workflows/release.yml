@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - 'release-*'
+      - 'hotfix-*'
+  workflow_dispatch: # to trigger manually
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get PRs merged since last release
+        id: get-prs
+        run: |
+          # Get the latest release
+          LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" | jq -r .tag_name)
+          # Get the list of PRs merged since the latest release
+          PRS_MERGED=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls?state=closed&base=main" | jq -r '[.[] | select(.merged_at != null) | select(.merged_at > "'$LATEST_RELEASE'") | .number]')
+          echo "::set-output name=prs::$PRS_MERGED"
+
+      - name: Create new tag
+        run: |
+          # Get the current version from pyproject.toml
+          CURRENT_VERSION=$(python -c "import tomllib; print(tomllib.loads(open('pyproject.toml').read())['tool']['poetry']['version'])")
+          # Create a new tag
+          git tag $CURRENT_VERSION
+          git push origin $CURRENT_VERSION
+
+      - name: Create GitHub release
+        uses: gh-actions/github-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: ${{ steps.get-version.outputs.version }}
+          title: Release ${{ steps.get-version.outputs.version }}
+          body: |
+            ## Changes
+            ${{ steps.get-prs.outputs.prs }}
+
+      - name: Create pull requests
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          head: ${{ github.ref }}
+          title: 'Update main branch'
+          body: 'Update main branch with changes from ${{ github.ref }}'
+          labels: 'update'
+          draft: true
+
+      - name: Create pull requests
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: dev
+          head: ${{ github.ref }}
+          title: 'Update dev branch'
+          body: 'Update dev branch with changes from ${{ github.ref }}'
+          labels: 'update'
+          draft: true
+
+      - name: Delete branch
+        run: |
+          # Delete the branch
+          git push origin --delete $GITHUB_REF
