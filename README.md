@@ -7,7 +7,7 @@
 <h3 align="center">Bootstrap</h3>
 
 <p align="center">
-  Batteries included Django template designed for practical, real-world applications
+  Batteries included Django project template designed for practical, real-world applications
   <br>
   <a href="#"><strong>Explore Django Template docs »</strong></a>
   <br>
