@@ -21,7 +21,11 @@ concurrency:
 
 
 jobs:
-  requirements:
+  update-requirements:
+    if: github.repository_owner == 'azataiot'
+    permissions:
+      contents: write # for peter-evans/create-pull-request to create branch
+      pull-requests: write # for peter-evans/create-pull-request to create a PR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code Repository
@@ -57,3 +61,17 @@ jobs:
         run: |
           poetry export --only main -f requirements.txt --output requirements/requirements.txt --without-hashes
           poetry export --only dev -f requirements.txt --output requirements/dev-requirements.txt --without-hashes
+
+      - name: Commit changes
+        run: |
+          git add requirements/requirements.txt requirements/dev-requirements.txt
+          git commit -m "Update requirements.txt and dev-requirements.txt" || echo "No changes to commit"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: Update requirements.txt and dev-requirements.txt
+          commit-message: Auto-update requirements.txt and dev-requirements.txt
+          branch: update/requirements
+          labels: update
