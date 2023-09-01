@@ -21,7 +21,8 @@ practices integrated out of the box.
 NOTICE: This project is still in development and is not ready for production use.
 
 <a href="https://github.com/azataiot/django-template/generate"><img src="https://img.shields.io/badge/use%20this-template-blue?logo=github" alt="use-this-repo-badge"></a>
-[![Keep Bootstrap Updated](https://github.com/azataiot/django-template/actions/workflows/bootstrap_update.yml/badge.svg)](https://github.com/azataiot/django-template/actions/workflows/bootstrap_update.yml) [![isort](https://img.shields.io/badge/%20linting-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![Keep Bootstrap Updated](https://github.com/azataiot/django-template/actions/workflows/bootstrap_update.yml/badge.svg)](https://github.com/azataiot/django-template/actions/workflows/bootstrap_update.yml) [![isort](https://img.shields.io/badge/%20linting-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/) [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/azataiot/django-template/main.svg)](https://results.pre-commit.ci/latest/github/azataiot/django-template/main)
+
 
 ## Features
 

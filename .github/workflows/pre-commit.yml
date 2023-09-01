@@ -31,4 +31,4 @@ jobs:
       - name: Install requirements
         run: pip install -r requirements/dev-requirements.txt
       - name: Run pre-commit
-        run: pre-commit run --all-files
+        run: pre-commit run --config .github/pre-commit.yaml --all-files
