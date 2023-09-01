@@ -47,10 +47,10 @@ if [ "$BRANCH_TYPE" == "release" ] || [ "$BRANCH_TYPE" == "hotfix" ]; then
     git add pyproject.toml
     git commit -m "Bumped version number to $NEW_VERSION"
 elif [ "$BRANCH_TYPE" == "feature" ]; then
-    read -p "Enter feature name: " FEATURE_NAME
-    BRANCH_NAME="$BRANCH_TYPE-$(echo $FEATURE_NAME | sed 's/ /-/g')"
+    read -rp "Enter feature name: " FEATURE_NAME
+    BRANCH_NAME="$BRANCH_TYPE-${FEATURE_NAME// /-}"
 else
-    BRANCH_NAME="$BRANCH_TYPE-$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)"
+    BRANCH_NAME="$BRANCH_TYPE-$(tr -dc 'a-z0-9' < /dev/urandom | fold -w 8 | head -n 1)"
 fi
 
 # Create and switch to the new branch
