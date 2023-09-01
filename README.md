@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://getbootstrap.com/">
+  <a href="https://github.com/azataiot/django-template/">
     <img src="docs/docs/assets/img/docs-icon-teal.png" alt="Bootstrap logo" width="200" height="165">
   </a>
 </p>
@@ -49,4 +49,3 @@ A streamlined Django template designed for practical, real-world applications, w
    using `make migrations`, [other options](https://docs.djangoproject.com/en/3.2/ref/django-admin/#django-admin-migrate).
 6. Run server
    using `make runserver` ( using django's local server) or `make daphne` (using daphne server).
-7.
