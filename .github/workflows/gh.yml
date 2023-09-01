@@ -44,8 +44,12 @@ jobs:
         run: |
           gh release create --generate-notes --title "Release $VERSION" "$VERSION"
 
+      - name: gh pr create (main)
+        if: success()
+        run: |
+          gh pr create --title "merge release $VERSION into main" --body "merging $VERSION into main"  --label "update" --base "main"
+
       - name: gh pr create (dev)
         if: success()
         run: |
-          gh pr create --title "merge release" --body "merging $VERSION into dev"  --label "update" --base "dev"
-          gh pr create --title "merge release" --body "merging $VERSION into dev"  --label "update" --base "main"
+          gh pr create --title "merge release $VERSION into dev" --body "merging $VERSION into dev"  --label "update" --base "dev"
