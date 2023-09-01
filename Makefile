@@ -1,4 +1,4 @@
-.PHONY: help, pre-commit, push, prdev, remove-branch, pr, update-dev, django-secret-key, docs, branch
+.PHONY: help, pre-commit, push, prdev, remove-branch, pr, update-branch-dev, django-secret-key, docs, branch, install
 .DEFAULT_GOAL := help
 
 ## This help screen
@@ -15,6 +15,35 @@ help:
 	  } \
 	} \
 	{ lastLine = $$0 }' $(MAKEFILE_LIST) | sort -u
+
+# -- Update && Upgrade --
+## Update (check for updates for django-template)
+update:
+	@echo "Checking for updates..."
+	@REMOTE_VERSION=$$(curl -s https://raw.githubusercontent.com/azataiot/django-template/main/pyproject.toml | grep '^version =' | awk -F\" '{print $$2}'); \
+	LOCAL_VERSION=$$(grep '^version =' pyproject.toml | awk -F\" '{print $$2}'); \
+	if [ "$$REMOTE_VERSION" != "$$LOCAL_VERSION" ]; then \
+		echo "Update available: $$REMOTE_VERSION (current version: $$LOCAL_VERSION)"; \
+	else \
+		echo "You are using the latest version: $$LOCAL_VERSION"; \
+	fi
+
+
+# -- Dependency --
+## Install dependencies (only main)
+install:
+	@command -v poetry >/dev/null 2>&1 || { echo >&2 "Poetry is not installed. Aborting."; exit 1; }
+	@echo "Installing dependencies..."
+	@poetry install --only main
+	@echo "Done!"
+
+## Install dependencies (development and testing)
+install-dev:
+	@command -v poetry >/dev/null 2>&1 || { echo >&2 "Poetry is not installed. Aborting."; exit 1; }
+	@echo "Installing dependencies..."
+	@poetry install
+	@echo "Done!"
+
 
 
 # -- Git and Github --
@@ -79,7 +108,7 @@ pr:
 	fi
 
 ## Update dev branch
-update-dev:
+update-branch-dev:
 	@if [ "$(shell git rev-parse --abbrev-ref HEAD)" = "dev" ]; then \
 		if git diff-index --quiet HEAD --; then \
 			echo "Updating dev branch..."; \
