@@ -28,3 +28,6 @@ pytest = "^7.4.0"
 
 [tool.poetry.group.git.dependencies]
 requests = "^2.31.0"
+
+[tool.poetry.group.docs.dependencies]
+mkdocs-material = "^9.2.6"

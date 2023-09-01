@@ -1,4 +1,4 @@
-.PHONY: help, pre-commit, push, prdev, remove-branch, pr, update-dev, django-secret-key
+.PHONY: help, pre-commit, push, prdev, remove-branch, pr, update-dev, django-secret-key, docs
 .DEFAULT_GOAL := help
 
 ## This help screen
@@ -98,3 +98,9 @@ update-dev:
 ## Generate secret key
 django-secret-key:
 	@python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+
+
+# -- Docs --
+## Build docs
+docs: ## Serve documentation locally
+	cd docs && mkdocs serve -a localhost:8090
