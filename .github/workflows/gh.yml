@@ -18,3 +18,6 @@ jobs:
       - name: gh
         run:
           gh auth status
+      - name: gh release create
+        run: |
+          gh release create --generate-notes --title "Release ${{ github.ref }}" "${{ github.ref }}"
