@@ -1,0 +1,4 @@
+/* inspired by docs/docs/extra.css from django-ninja */
+.doc-module code {
+  white-space: nowrap;
+}
