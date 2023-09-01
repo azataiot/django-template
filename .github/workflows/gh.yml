@@ -5,12 +5,16 @@ on:
 jobs:
   gh:
     if: github.repository_owner == 'azataiot' && github.repository == 'azataiot/django-template'
+    env:
+      GH_TOKEN: ${{ github.token }}
     permissions:
       issues: write
       pull-requests: write
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - run:
+      - name: gh
+        run:
           gh auth status
