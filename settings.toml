@@ -1,11 +1,11 @@
-# Django related settings for the project.
-# All configurations in this file are optional, they also can be defined in the environment variables,
-# or in the .env file (under the root of the project).
-# The environment variables have higher priority than the .env file.
-# The environment variables should be defined in the format of "<SECTION>_<SETTING>", for example, "DATABASE_ENGINE".
-# The variables inside the environ list is highly recommended to be
-# defined in the environment variables or in the .env file
-# and fails if not defined for `make production` command.
+# Project Settings
+# This file contains optional configurations for the project. These settings can also be specified via environment
+# variables or within a .env file located at the project's root.
+# Priority is given to environment variables over the .env file.
+# Environment variables should be formatted as "<SECTION>_<SETTING>", e.g., "DATABASE_ENGINE".
+# It is strongly advised to define the variables listed in the 'environ' list either as environment variables
+# or in the .env file, and the `make production` command will fail if they are not specified.
+
 
 [django]
 environ = ["secret_key"]
