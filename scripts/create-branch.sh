@@ -55,5 +55,10 @@ fi
 
 # Create and switch to the new branch
 git checkout -b "$BRANCH_NAME"
+# Create a tag for release and hotfix branches
+if [ "$BRANCH_TYPE" == "release" ] || [ "$BRANCH_TYPE" == "hotfix" ]; then
+    git tag "$NEW_VERSION"
+    echo "Created tag $NEW_VERSION"
+fi
 
 echo "Created new branch $BRANCH_NAME with version number $NEW_VERSION"
