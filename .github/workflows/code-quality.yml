@@ -1,0 +1,57 @@
+name: Code Quality
+
+on:
+  pull_request:
+    branches: [ 'main', 'dev' ]
+    types:
+      - opened
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+
+jobs:
+  linting:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.user.login != 'azataiot')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - uses: pre-commit/action@v3.0.0
+
+
+  testing:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.user.login != 'azataiot')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+      - name: Setup a local virtual environment (if no poetry.toml file)
+        run: |
+          poetry config virtualenvs.create true --local
+          poetry config virtualenvs.in-project true --local
+      - uses: actions/cache@v3
+        name: Define a cache for the virtual environment based on the dependencies lock file
+        with:
+          path: ./.venv
+          key: venv-${{ hashFiles('poetry.lock') }}
+      - name: Install the project dependencies
+        run: poetry install
+      - name: Run the automated tests
+        run: poetry run python -m pytest
+      - name: Run the django checks
+        run: poetry run project/manage.py check
