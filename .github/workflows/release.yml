@@ -8,8 +8,14 @@ on:
 
 jobs:
   release:
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
     if: github.repository_owner == 'azataiot'
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - uses: actions/checkout@v2
@@ -17,22 +23,17 @@ jobs:
         id: get-project-version
         run: |
           echo "VERSION=$(grep -oP '(?<=version = ")[^"]*' pyproject.toml)" >> $GITHUB_ENV
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create or update release
         run: |
           gh release create "${{ env.VERSION }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       - name: Create PR to main
         run: |
           gh pr create --base main --head "${{ github.ref }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       - name: Create PR to dev
         run: |
           gh pr create --base dev --head "${{ github.ref }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
