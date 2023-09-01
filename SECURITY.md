@@ -15,7 +15,6 @@ Only stable versions of the software are supported with security patches. Beta a
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability, please report it to security@djangoproject.com if it is related to Django. 
+If you discover a security vulnerability, please report it to security@djangoproject.com if it is related to Django.
 
 For other securities vulnarability, contact @azataiot. We take all security reports seriously and will review and respond to your report as quickly as possible. Please provide as much detail as possible to help us understand the nature and scope of the vulnerability.
-
