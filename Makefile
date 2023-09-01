@@ -1,4 +1,4 @@
-.PHONY: help, pre-commit, push, prdev, remove-branch, pr, update-branch-dev, django-secret-key, docs, branch, install
+.PHONY: help, pre-commit, push, prdev, remove-branch, pr, update-branch-dev, django-secret-key, docs, branch, install, lint, update, install-dev
 .DEFAULT_GOAL := help
 
 ## This help screen
@@ -44,6 +44,13 @@ install-dev:
 	@poetry install
 	@echo "Done!"
 
+# -- Code Quality --
+## Linting code (ruff, isort)
+lint:
+	@echo "Linting code..."
+	@poetry run ruff check .
+	@poetry run isort .
+	@echo "Done!"
 
 
 # -- Git and Github --
@@ -131,6 +138,14 @@ branch:
 django-secret-key:
 	@python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 
+## Run Django server (with sqlite3)
+run:
+	@echo "Starting Django server..."
+	@PYTHONPATH=$(PWD) poetry run python project/manage.py runserver
+
+## Run Django server (with postgres database)
+dev:
+	@poetry run python project/manage.py runserver
 
 # -- Docs --
 ## Build docs
