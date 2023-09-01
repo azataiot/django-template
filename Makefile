@@ -71,12 +71,18 @@ pre-commit:
 ## Push current branch
 push:
 	@if git diff-index --quiet HEAD -- && git diff --staged --quiet; then \
-		echo "Pushing to $(shell git rev-parse --abbrev-ref HEAD) branch..."; \
-		git push origin $(shell git rev-parse --abbrev-ref HEAD); \
+		BRANCH_NAME=$(shell git rev-parse --abbrev-ref HEAD); \
+		echo "Pushing to $$BRANCH_NAME branch..."; \
+		git push origin $$BRANCH_NAME; \
+		if [[ $$BRANCH_NAME == release-* ]] || [[ $$BRANCH_NAME == hotfix-* ]]; then \
+			echo "Pushing tags..."; \
+			git push --tags; \
+		fi; \
 		echo "Done!"; \
 	else \
 		echo "Uncommitted or unstaged changes found. Please commit and stage your changes before pushing."; \
 	fi
+
 
 
 ## Create PR to dev branch
