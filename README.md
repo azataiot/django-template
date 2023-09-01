@@ -14,7 +14,6 @@
   <br>
 </p>
 
-## django-template
 
 A streamlined Django template designed for practical, real-world applications, with essential configurations and best
 practices integrated out of the box.
