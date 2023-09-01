@@ -41,9 +41,13 @@ elif [ "$BRANCH_TYPE" == "hotfix" ]; then
     NEW_VERSION=$(python -c "import increment_version; print(increment_version.increment_version('$CURRENT_VERSION', 'final'))")
     BRANCH_NAME="$BRANCH_TYPE-$NEW_VERSION"
 elif [ "$BRANCH_TYPE" == "feature" ]; then
+    # shellcheck disable=SC2162
     read -p "Enter feature name: " FEATURE_NAME
+    # shellcheck disable=SC2001
+    # shellcheck disable=SC2086
     BRANCH_NAME="$BRANCH_TYPE-$(echo $FEATURE_NAME | sed 's/ /-/g')"
 else
+    # shellcheck disable=SC2002
     BRANCH_NAME="$BRANCH_TYPE-$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)"
 fi
 
@@ -51,7 +55,7 @@ fi
 sed -i "s/version = \"$CURRENT_VERSION\"/version = \"$NEW_VERSION\"/" pyproject.toml
 
 # Create and switch to the new branch
-git checkout -b $BRANCH_NAME
+git checkout -b "$BRANCH_NAME"
 
 # Commit the changes
 git add pyproject.toml
