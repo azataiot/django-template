@@ -1,4 +1,4 @@
-.PHONY: help, pre-commit, push, prdev, remove-branch, pr, update-dev, django-secret-key, docs, branch
+.PHONY: help, pre-commit, push, prdev, remove-branch, pr, update-branch-dev, django-secret-key, docs, branch, install, lint, update, install-dev, migrate, run, dev, requirements
 .DEFAULT_GOAL := help
 
 ## This help screen
@@ -15,6 +15,50 @@ help:
 	  } \
 	} \
 	{ lastLine = $$0 }' $(MAKEFILE_LIST) | sort -u
+
+# -- Update && Upgrade --
+## Update (check for updates for django-template)
+update:
+	@echo "Checking for updates..."
+	@REMOTE_VERSION=$$(curl -s https://raw.githubusercontent.com/azataiot/django-template/main/pyproject.toml | grep '^version =' | awk -F\" '{print $$2}'); \
+	LOCAL_VERSION=$$(grep '^version =' pyproject.toml | awk -F\" '{print $$2}'); \
+	if [ "$$REMOTE_VERSION" != "$$LOCAL_VERSION" ]; then \
+		echo "Update available: $$REMOTE_VERSION (current version: $$LOCAL_VERSION)"; \
+	else \
+		echo "You are using the latest version: $$LOCAL_VERSION"; \
+	fi
+
+
+# -- Dependency --
+## Install dependencies (only main)
+install:
+	@command -v poetry >/dev/null 2>&1 || { echo >&2 "Poetry is not installed. Aborting."; exit 1; }
+	@echo "Installing dependencies..."
+	@poetry install --only main
+	@echo "Done!"
+
+## Install dependencies (development and testing)
+install-dev:
+	@command -v poetry >/dev/null 2>&1 || { echo >&2 "Poetry is not installed. Aborting."; exit 1; }
+	@echo "Installing dependencies..."
+	@poetry install
+	@echo "Done!"
+
+## Export dependencies to requirements.txt
+requirements:
+	@echo "Exporting dependencies to requirements.txt..."
+	@poetry export --only main -f requirements.txt --output requirements/requirements.txt --without-hashes
+	@poetry export --only dev -f requirements.txt --output requirements/dev-requirements.txt --without-hashes
+	@echo "Done!"
+
+
+# -- Code Quality --
+## Linting code (ruff, isort)
+lint:
+	@echo "Linting code..."
+	@poetry run ruff check .
+	@poetry run isort .
+	@echo "Done!"
 
 
 # -- Git and Github --
@@ -79,7 +123,7 @@ pr:
 	fi
 
 ## Update dev branch
-update-dev:
+update-branch-dev:
 	@if [ "$(shell git rev-parse --abbrev-ref HEAD)" = "dev" ]; then \
 		if git diff-index --quiet HEAD --; then \
 			echo "Updating dev branch..."; \
@@ -102,6 +146,20 @@ branch:
 django-secret-key:
 	@python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 
+## Run Django migrations
+migrate:
+	@echo "Running Django migrations..."
+	@PYTHONPATH=$(PWD) poetry run python project/manage.py makemigrations
+	@PYTHONPATH=$(PWD) poetry run python project/manage.py migrate
+
+## Run Django server (with sqlite3)
+run:
+	@echo "Starting Django server..."
+	@PYTHONPATH=$(PWD) poetry run python project/manage.py runserver
+
+## Run Django server (with postgres database)
+dev:
+	@poetry run python project/manage.py runserver
 
 # -- Docs --
 ## Build docs

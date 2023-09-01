@@ -7,13 +7,8 @@ repos:
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
-      - id: check-json
       - id: check-toml
-      - id: check-xml
       - id: check-yaml
-      - id: debug-statements
-      - id: check-builtin-literals
-      - id: check-case-conflict
       - id: check-docstring-first
       - id: detect-private-key
       - id: check-added-large-files
@@ -30,6 +25,12 @@ repos:
     hooks:
       - id: pyupgrade
         args: [ --py311-plus ]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.286
+    hooks:
+      - id: ruff
+        args: [ '--ignore=E501' ]
 
   - repo: https://github.com/psf/black
     rev: 23.7.0
@@ -49,16 +50,17 @@ repos:
       - id: flake8
         args: [ '--ignore=E501' ]
 
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.0.286
+    hooks:
+      - id: ruff
+        args: [ '--ignore=E501' ]
+
 
   - repo: https://github.com/python-poetry/poetry
     rev: 1.6.0  # add version here
     hooks:
-      - id: poetry-export
-        args: [ "-f", "requirements.txt", "-o", "requirements/requirements.txt" ]
-      - id: poetry-export
-        args: [ "-f", "requirements.txt","--with","dev","--with","test", "-o", "requirements/dev-requirements.txt" ]
-      - id: poetry-export
-        args: [ "-f", "requirements.txt","--only","git", "-o", ".github/requirements.txt" ]
       - id: poetry-check
       - id: poetry-lock
 

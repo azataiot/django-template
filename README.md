@@ -1,10 +1,10 @@
 <p align="center">
   <a href="https://github.com/azataiot/django-template/">
-    <img src="docs/docs/assets/img/docs-icon-teal.png" alt="Bootstrap logo" width="200" height="165">
+    <img src="docs/docs/assets/img/docs-icon-teal-200.png" alt="django-template logo" width="200" height="200">
   </a>
 </p>
 
-<h3 align="center">Bootstrap</h3>
+<h3 align="center">Django Template</h3>
 
 <p align="center">
   Batteries included Django project template designed for practical, real-world applications
@@ -14,14 +14,12 @@
   <br>
 </p>
 
-## django-template
 
-A streamlined Django template designed for practical, real-world applications, with essential configurations and best practices integrated out of the box.
+A streamlined Django template designed for practical, real-world applications, with essential configurations and best
+practices integrated out of the box.
 
 <a href="https://github.com/azataiot/django-template/generate"><img src="https://img.shields.io/badge/use%20this-template-blue?logo=github" alt="use-this-repo-badge"></a>
-[![Keep Bootstrap Updated](https://github.com/azataiot/django-template/actions/workflows/bootstrap_update.yml/badge.svg)](https://github.com/azataiot/django-template/actions/workflows/bootstrap_update.yml)
-
-
+[![Keep Bootstrap Updated](https://github.com/azataiot/django-template/actions/workflows/bootstrap_update.yml/badge.svg)](https://github.com/azataiot/django-template/actions/workflows/bootstrap_update.yml) [![isort](https://img.shields.io/badge/%20linting-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 
 ## Features
 

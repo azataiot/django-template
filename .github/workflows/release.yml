@@ -5,6 +5,7 @@ on:
     branches:
       - 'release-*'
       - 'hotfix-*'
+  workflow_dispatch: # to trigger manually
 
 jobs:
   release:
@@ -33,18 +34,16 @@ jobs:
           allowUpdates: true
           generateReleaseNotes: true
 
-      - name: Create Pull Request to dev
-        uses: peter-evans/create-pull-request@v5.0.2
-        with:
-          branch: dev
-          labels: release
-
-      - name: Create Pull Request to main
-        uses: peter-evans/create-pull-request@v5.0.2
-        with:
-          branch: main
-          labels: release
-
-      - name: Delete branch
+      - name: Commit changes
         run: |
-          gh branch delete "${{ github.ref }}" --force
+          git add requirements/requirements.txt requirements/dev-requirements.txt
+          git commit -m "Update requirements.txt and dev-requirements.txt" || echo "No changes to commit"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: Update requirements.txt and dev-requirements.txt
+          commit-message: Auto-update requirements.txt and dev-requirements.txt
+          branch: update/requirements
+          labels: update
