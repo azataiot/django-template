@@ -106,7 +106,7 @@ remove-branch:
 	else \
 		git checkout dev; \
 		git push origin -d $$BRANCH_TO_DELETE; \
-		git branch -d $$BRANCH_TO_DELETE; \
+		git branch -D $$BRANCH_TO_DELETE; \
 		echo "Branch $$BRANCH_TO_DELETE deleted."; \
 		git pull origin dev; \
 		echo "branch `dev` updated."; \
