@@ -1,7 +1,9 @@
-<div style="text-align:center"><a href="https://github.com/azataiot/django-template/">
+<p style="text-align:center;">
+  <a href="https://github.com/azataiot/django-template/">
     <img src="docs/docs/assets/img/docs-icon-teal-200.png" alt="Bootstrap logo" width="200" height="200">
   </a>
-</div>
+</p>
+
 
 <h3 align="center">Bootstrap</h3>
 
