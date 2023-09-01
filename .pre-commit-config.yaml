@@ -63,6 +63,10 @@ repos:
     hooks:
       - id: poetry-check
       - id: poetry-lock
+      - id: poetry-export
+        args: [ "-f", "requirements.txt","--only","main","-o", "requirements/requirements.txt" ]
+      - id: poetry-export
+        args: [ "-f", "requirements.txt","--only","dev","-o", "requirements/dev-requirements.txt" ]
 
 # sets up .pre-commit-ci.yaml to ensure pre-commit dependencies stay up to date
 ci:
