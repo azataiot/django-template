@@ -35,21 +35,17 @@ jobs:
           fi
         continue-on-error: true
 
-      - name: Delete existing release
-        if: steps.check_release.outputs.exists == 'true'
-        run: |
-          gh release delete "$VERSION" --yes
-
       - name: gh release create
+        if: steps.check_release.outputs.exists != 'true'
         run: |
           gh release create --generate-notes --title "Release $VERSION" "$VERSION"
 
       - name: gh pr create (main)
-        if: success()
+        if: steps.check_release.outputs.exists != 'true' && success()
         run: |
           gh pr create --title "merge release $VERSION into main" --body "merging $VERSION into main"  --label "update" --base "main"
 
       - name: gh pr create (dev)
-        if: success()
+        if: steps.check_release.outputs.exists != 'true' && success()
         run: |
           gh pr create --title "merge release $VERSION into dev" --body "merging $VERSION into dev"  --label "update" --base "dev"
