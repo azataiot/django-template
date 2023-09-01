@@ -10,58 +10,20 @@ jobs:
   release:
     runs-on: ubuntu-latest
     env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Get PRs merged since last release
-        id: get-prs
+      - uses: actions/checkout@v2
+      - name: Get project version
         run: |
-          # Get the latest release
-          LATEST_RELEASE=$(gh release list | head -n 1 | awk '{print $1}')
-          # Get the list of PRs merged since the latest release
-          PRS_MERGED=$(gh pr list --base main --state merged --json number,mergedAt -q ".[] | select(.mergedAt > \"$LATEST_RELEASE\") | .number")
-          echo "PRS=$PRS_MERGED" >> $GITHUB_ENV
-
-
-      - name: Create new tag
+          echo "::set-output name=version::$(poetry version)"
+      - name: Create or update release
         run: |
-          # Get the current version from pyproject.toml
-          CURRENT_VERSION=$(python -c "import tomllib; print(tomllib.loads(open('pyproject.toml').read())['tool']['poetry']['version'])")
-          # Create a new tag
-          git tag $CURRENT_VERSION
-          git push origin $CURRENT_VERSION
+          gh release create "${{ steps.get-project-version.outputs.version }}"
 
-      - name: Create GitHub release
+      - name: Create PR to main
         run: |
-          gh release create $CURRENT_VERSION \
-            --title "Release $CURRENT_VERSION" \
-            --notes "## Changes\n\n${{ steps.get-prs.outputs.prs }}"
+          gh pr create --base main --head "${{ github.ref }}"
 
-      - name: Delete branch
+      - name: Create PR to dev
         run: |
-          # Delete the branch
-          git push origin --delete $GITHUB_REF
-
-      - name: Create pull requests
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: main
-          head: ${{ github.ref }}
-          title: 'Update main branch'
-          body: 'Update main branch with changes from ${{ github.ref }}'
-          labels: 'update'
-          draft: true
-
-      - name: Create pull requests
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: dev
-          head: ${{ github.ref }}
-          title: 'Update dev branch'
-          body: 'Update dev branch with changes from ${{ github.ref }}'
-          labels: 'update'
-          draft: true
+          gh pr create --base dev --head "${{ github.ref }}"
