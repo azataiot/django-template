@@ -1,4 +1,4 @@
-.PHONY: help, pre-commit, push, prdev, remove-branch, pr, update-branch-dev, django-secret-key, docs, branch, install, lint, update, install-dev
+.PHONY: help, pre-commit, push, prdev, remove-branch, pr, update-branch-dev, django-secret-key, docs, branch, install, lint, update, install-dev, migrate, run, dev
 .DEFAULT_GOAL := help
 
 ## This help screen
@@ -137,6 +137,12 @@ branch:
 ## Generate secret key
 django-secret-key:
 	@python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+
+## Run Django migrations
+migrate:
+	@echo "Running Django migrations..."
+	@PYTHONPATH=$(PWD) poetry run python project/manage.py makemigrations
+	@PYTHONPATH=$(PWD) poetry run python project/manage.py migrate
 
 ## Run Django server (with sqlite3)
 run:
