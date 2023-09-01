@@ -5,6 +5,13 @@ on:
     paths:
       - 'pyproject.toml'
       - 'poetry.lock'
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'pyproject.toml'
+      - 'poetry.lock'
   workflow_dispatch:
 
 
