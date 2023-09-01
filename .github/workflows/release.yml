@@ -14,6 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Get project version
+        id: get-project-version
         run: |
           echo "::set-output name=version::$(poetry version)"
       - name: Create or update release
