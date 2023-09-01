@@ -2,9 +2,8 @@ name: Release
 
 on:
   push:
-    branches:
-      - 'release-*'
-      - 'hotfix-*'
+    tags:
+      - '*'
   workflow_dispatch: # to trigger manually
 
 jobs:
