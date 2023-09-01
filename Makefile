@@ -60,6 +60,12 @@ lint:
 	@poetry run isort .
 	@echo "Done!"
 
+## Test code (pytest)
+test:
+	@echo "Testing code..."
+	@poetry run python -m pytest
+	@poetry run project/manage.py check
+	@echo "Done!"
 
 # -- Git and Github --
 ## Run pre-commit hooks
@@ -75,13 +81,15 @@ push:
 		echo "Pushing to $$BRANCH_NAME branch..."; \
 		git push origin $$BRANCH_NAME; \
 		if [[ $$BRANCH_NAME == release-* ]] || [[ $$BRANCH_NAME == hotfix-* ]]; then \
-			echo "Pushing tags..."; \
-			git push --tags; \
+			TAG_NAME=$(shell git describe --tags --abbrev=0); \
+			echo "Pushing $$TAG_NAME tag..."; \
+			git push origin $$TAG_NAME; \
 		fi; \
 		echo "Done!"; \
 	else \
 		echo "Uncommitted or unstaged changes found. Please commit and stage your changes before pushing."; \
 	fi
+
 
 
 
