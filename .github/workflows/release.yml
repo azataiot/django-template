@@ -37,3 +37,7 @@ jobs:
       - name: Create PR to dev
         run: |
           gh pr create --base dev --head "${{ github.ref }}"
+
+      - name: Delete branch
+        run: |
+          gh branch delete "${{ github.ref }}" --force
