@@ -13,6 +13,7 @@ debug = "True"
 log_level = "info"
 allowded_hosts = ["localhost", "127.0.0.1", "[::1]"]
 secret_key = "3_kqc@ig3+=@yxv8tm9!s%^d_lv-al%qvpbawt&5v5%!sj_vv1" # WARNING: keep this setting in env DJANGO_SECRET_KEY
+env_file = ".env" # path to .env file, relative to project root
 
 
 [database]
