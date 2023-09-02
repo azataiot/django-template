@@ -1,4 +1,4 @@
-.PHONY: help, pre-commit, push, prdev, remove-branch, pr, update-branch-dev, django-secret-key, docs, branch, install, lint, update, install-dev, migrate, run, dev, requirements
+.PHONY: help, pre-commit, push, prdev, remove-branch, pr, update-branch-dev, django-secret-key, docs, branch, install, lint, update, install-dev, migrate, run, dev, requirements, clean, test
 .DEFAULT_GOAL := help
 
 ## This help screen
@@ -65,6 +65,14 @@ test:
 	@echo "Testing code..."
 	@poetry run python -m pytest
 	@poetry run project/manage.py check
+	@echo "Done!"
+
+## Clean Python cache files
+clean:
+	@echo "Cleaning Python cache files..."
+	@find . -type d -name "__pycache__" -exec rm -rf {} +
+	@find . -type f -name "*.pyc" -delete
+	@find . -type f -name "*.pyo" -delete
 	@echo "Done!"
 
 # -- Git and Github --
@@ -163,8 +171,8 @@ django-secret-key:
 ## Run Django migrations
 migrate:
 	@echo "Running Django migrations..."
-	@PYTHONPATH=$(PWD) poetry run python project/manage.py makemigrations
-	@PYTHONPATH=$(PWD) poetry run python project/manage.py migrate
+	@PYTHONPATH=$(PWD) poetry run python dj/manage.py makemigrations
+	@PYTHONPATH=$(PWD) poetry run python dj/manage.py migrate
 
 ## Run Django server (with sqlite3)
 run:
