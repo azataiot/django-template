@@ -1,4 +1,4 @@
-.PHONY: help, pre-commit, push, prdev, remove-branch, pr, update-branch-dev, django-secret-key, docs, branch, install, lint, update, install-dev, migrate, run, dev, requirements, clean, test
+.PHONY: help, pre-commit, push, prdev, remove-branch, pr, update-branch-dev, django-secret-key, docs, branch, install, lint, update, install-dev, migrate, run, dev, requirements, clean, test, test-py, test-dj
 .DEFAULT_GOAL := help
 
 ## This help screen
@@ -63,12 +63,27 @@ lint:
 	@echo "Done!"
 
 ## Test code (pytest)
-test:
-	@echo "Testing code..."
+test-py:
+	@echo "Running pytest..."
 	@poetry run python -m pytest
+	@echo "Done!"
+
+## Test code (django check + django test)
+test-dj:
+	@echo "Running manage.py check..."
 	@poetry run dj/manage.py check
+	@echo "Running manage.py test..."
 	@poetry run dj/manage.py test
 	@echo "Done!"
+
+## Test code (pytest+django)
+# we simply call pytest and django test
+test:
+	@echo "Testing code..."
+	@(Make test-py)
+	@(Make test-dj)
+	@echo "Done!"
+
 
 ## Clean Python cache files
 clean:
@@ -164,7 +179,7 @@ update-branch-dev:
 
 ##
 branch:
-	scripts/create-branch.sh
+	@poetry run python scripts/create_branch.py
 
 # -- Django --
 ## Generate secret key
