@@ -1,4 +1,4 @@
-exclude: '^docs/|/migrations/'
+exclude: '.*migrations\/.*'
 default_stages: [ commit ]
 
 repos:
@@ -14,18 +14,6 @@ repos:
       - id: check-added-large-files
         args: [ '--maxkb=1024' ]
 
-  - repo: https://github.com/adamchainz/django-upgrade
-    rev: '1.14.1'
-    hooks:
-      - id: django-upgrade
-        args: [ '--target-version', '4.2' ]
-
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.10.1
-    hooks:
-      - id: pyupgrade
-        args: [ --py311-plus ]
-
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.0.287
     hooks:
@@ -34,7 +22,6 @@ repos:
 
   - repo: https://github.com/psf/black
     rev: 23.7.0
-    exclude: .*migrations\/.*
     hooks:
       - id: black
         exclude: \.py-tpl$
