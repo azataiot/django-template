@@ -205,11 +205,11 @@ migrate:
 ## Run Django server (with sqlite3)
 run:
 	@echo "Starting Django server..."
-	@PYTHONPATH=$(PWD) poetry run python project/manage.py runserver
+	@PYTHONPATH=$(PWD) poetry run python dj/manage.py runserver
 
 ## Run Django server (with postgres database)
 dev:
-	@poetry run python project/manage.py runserver
+	@poetry run python dj/manage.py runserver
 
 # -- Docs --
 ## Build docs
