@@ -5,11 +5,11 @@ CURRENT_VERSION=$(python -c "import tomllib; print(tomllib.loads(open('pyproject
 
 # Select branch type
 PS3="Select branch type: "
-options=("release" "hotfix" "feature" "temp")
+options=("feature" "release" "temp")
 select opt in "${options[@]}"
 do
     case $opt in
-        "release"|"hotfix"|"feature"|"temp")
+        "feature"|"release"|"temp")
             BRANCH_TYPE=$opt
             break
             ;;
@@ -17,38 +17,42 @@ do
     esac
 done
 
-# Determine the base branch to checkout from based on the branch type
+# Determine the base branch for checkout based on branch type
 case $BRANCH_TYPE in
-    "feature"|"release")
-        git checkout dev
+    "feature")
+        BASE_BRANCH="dev"
         ;;
-    "hotfix")
-        git checkout main
+    "temp")
+        BASE_BRANCH=$(git branch --show-current)  # Current branch
+        ;;
+    "release")
+        PS3="Select release type: "
+        options=("final" "a" "b" "rc" "post" "dev")
+        select opt in "${options[@]}"
+        do
+            case $opt in
+                "final"|"a"|"b"|"rc"|"dev")
+                    RELEASE_TYPE=$opt
+                    BASE_BRANCH="dev"
+                    break
+                    ;;
+                "post")
+                    RELEASE_TYPE=$opt
+                    BASE_BRANCH="main"
+                    break
+                    ;;
+                *) echo "invalid option $REPLY";;
+            esac
+        done
         ;;
 esac
 
-# Select release type
+# Increment the version number according to PEP 440 for release branches
 if [ "$BRANCH_TYPE" == "release" ]; then
-    PS3="Select release type: "
-    options=("alpha" "beta" "candidate" "breaking" "final")
-    select opt in "${options[@]}"
-    do
-        case $opt in
-            "alpha"|"beta"|"candidate"|"breaking"|"final")
-                RELEASE_TYPE=$opt
-                break
-                ;;
-            *) echo "invalid option $REPLY";;
-        esac
-    done
-fi
-
-# Increment the version number according to PEP 440
-if [ "$BRANCH_TYPE" == "release" ] || [ "$BRANCH_TYPE" == "hotfix" ]; then
     cd scripts || exit
     if ! NEW_VERSION=$(python -c "import increment_version; print(increment_version.increment_version('$CURRENT_VERSION', '$RELEASE_TYPE'))"); then
-    echo "Error incrementing version number"
-    exit 1
+        echo "Error incrementing version number"
+        exit 1
     fi
     cd .. || exit
     BRANCH_NAME="$BRANCH_TYPE/$NEW_VERSION"
@@ -66,10 +70,12 @@ else
     BRANCH_NAME="$BRANCH_TYPE/$(tr -dc 'a-z0-9' < /dev/urandom | fold -w 8 | head -n 1)"
 fi
 
-# Create and switch to the new branch
+# Checkout the appropriate base branch and create the new branch
+git checkout "$BASE_BRANCH"
 git checkout -b "$BRANCH_NAME"
-# Create a tag for release and hotfix branches
-if [ "$BRANCH_TYPE" == "release" ] || [ "$BRANCH_TYPE" == "hotfix" ]; then
+
+# Create a tag for release branches
+if [ "$BRANCH_TYPE" == "release" ]; then
     git tag "$NEW_VERSION"
     echo "Created tag $NEW_VERSION"
 fi
