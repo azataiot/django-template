@@ -48,11 +48,14 @@ repos:
     rev: 1.6.0  # add version here
     hooks:
       - id: poetry-check
-      - id: poetry-lock
-      - id: poetry-export
-        args: [ "-f", "requirements.txt","--only","main","-o", "requirements/requirements.txt" ]
-      - id: poetry-export
-        args: [ "-f", "requirements.txt","--only","dev","-o", "requirements/dev-requirements.txt" ]
+
+  - repo: local
+    hooks:
+      - id: check-pyproject-changes
+        name: Check pyproject.toml Changes
+        entry: ./scripts/check_pyproject_changes.sh
+        language: script
+
 
 # sets up .pre-commit-ci.yaml to ensure pre-commit dependencies stay up to date
 ci:
