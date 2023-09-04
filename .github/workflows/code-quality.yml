@@ -49,9 +49,9 @@ jobs:
       - name: Run the automated tests
         run: poetry run python -m pytest
       - name: Run the django checks
-        run: poetry run project/manage.py check
+        run: poetry run dj/manage.py check
       - name: Run the django tests
-        run: poetry run project/manage.py test
+        run: poetry run dj/manage.py test
 
   versioning:
     if: github.ref == 'refs/heads/main'
