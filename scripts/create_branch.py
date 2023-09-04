@@ -19,7 +19,10 @@ def select_branch_type():
         for idx, opt in enumerate(options, 1):
             print(f"{idx}. {opt}")
         try:
-            choice = int(input("Select branch type: "))
+            choice = input(f"Select branch type (default is {options[0]}): ")
+            if not choice:
+                return options[0]
+            choice = int(choice)
             if 1 <= choice <= len(options):
                 return options[choice - 1]
             else:
@@ -32,8 +35,10 @@ def select_release_type():
     options = ["final", "a", "b", "rc", "post", "dev"]
     for idx, opt in enumerate(options, 1):
         print(f"{idx}. {opt}")
-    choice = int(input("Select release type: "))
-    return options[choice - 1]
+    choice = input(f"Select release type (default is {options[0]}): ")
+    if not choice:
+        return options[0]
+    return options[int(choice) - 1]
 
 
 def get_base_branch(branch_type):
@@ -50,43 +55,49 @@ def get_base_branch(branch_type):
 
 
 def main():
-    current_version = get_current_version()
-    branch_type = select_branch_type()
-    base_branch = get_base_branch(branch_type)
-    new_version = None  # Initialize to avoid the warning
+    try:
+        current_version = get_current_version()
+        branch_type = select_branch_type()
+        base_branch = get_base_branch(branch_type)
+        new_version = None  # Initialize to avoid the warning
 
-    if branch_type == "release":
-        import increment_version
+        if branch_type == "release":
+            import increment_version
 
-        new_version = increment_version.increment_version(
-            current_version, select_release_type()
+            new_version = increment_version.increment_version(
+                current_version, select_release_type()
+            )
+            branch_name = f"{branch_type}/{new_version}"
+
+            # Commit the changes
+            subprocess.run(["git", "add", "pyproject.toml"])
+            subprocess.run(
+                ["git", "commit", "-m", f"Bumped version number to {new_version}"]
+            )
+
+        elif branch_type == "feature":
+            feature_name = input("Enter feature name (default is refactoring): ")
+            if not feature_name:
+                feature_name = "refactoring"
+            branch_name = f"{branch_type}/{feature_name.replace(' ', '-')}"
+        else:
+            branch_name = f"{branch_type}/{''.join(random.choices(string.ascii_lowercase + string.digits, k=8))}"
+
+        # Checkout the appropriate base branch and create the new branch
+        subprocess.run(["git", "checkout", base_branch])
+        subprocess.run(["git", "checkout", "-b", branch_name])
+
+        # Create a tag for release branches
+        if branch_type == "release" and new_version:
+            subprocess.run(["git", "tag", new_version])
+            print(f"Created tag {new_version}")
+
+        print(
+            f"Created new branch {branch_name} with version number {new_version if branch_type == 'release' else ''}"
         )
-        branch_name = f"{branch_type}/{new_version}"
 
-        # Commit the changes
-        subprocess.run(["git", "add", "pyproject.toml"])
-        subprocess.run(
-            ["git", "commit", "-m", f"Bumped version number to {new_version}"]
-        )
-
-    elif branch_type == "feature":
-        feature_name = input("Enter feature name: ")
-        branch_name = f"{branch_type}/{feature_name.replace(' ', '-')}"
-    else:
-        branch_name = f"{branch_type}/{''.join(random.choices(string.ascii_lowercase + string.digits, k=8))}"
-
-    # Checkout the appropriate base branch and create the new branch
-    subprocess.run(["git", "checkout", base_branch])
-    subprocess.run(["git", "checkout", "-b", branch_name])
-
-    # Create a tag for release branches
-    if branch_type == "release" and new_version:
-        subprocess.run(["git", "tag", new_version])
-        print(f"Created tag {new_version}")
-
-    print(
-        f"Created new branch {branch_name} with version number {new_version if branch_type == 'release' else ''}"
-    )
+    except KeyboardInterrupt:
+        print("\nOperation interrupted by user. Cleaning up...")
 
 
 if __name__ == "__main__":
