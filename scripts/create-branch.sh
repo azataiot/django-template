@@ -17,6 +17,16 @@ do
     esac
 done
 
+# Determine the base branch to checkout from based on the branch type
+case $BRANCH_TYPE in
+    "feature"|"release")
+        git checkout dev
+        ;;
+    "hotfix")
+        git checkout main
+        ;;
+esac
+
 # Select release type
 if [ "$BRANCH_TYPE" == "release" ]; then
     PS3="Select release type: "
@@ -32,16 +42,6 @@ if [ "$BRANCH_TYPE" == "release" ]; then
         esac
     done
 fi
-
-# Determine the base branch to checkout from based on the branch type
-case $BRANCH_TYPE in
-    "feature"|"release")
-        git checkout dev
-        ;;
-    "hotfix")
-        git checkout main
-        ;;
-esac
 
 # Increment the version number according to PEP 440
 if [ "$BRANCH_TYPE" == "release" ] || [ "$BRANCH_TYPE" == "hotfix" ]; then
