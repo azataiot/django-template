@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
-import dj_database_url
 import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -32,7 +31,7 @@ SECRET_KEY = env(
 )
 
 # TODO: SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DJANGO_DEBUG", default=False)
+DEBUG = env("DEBUG", default=False)
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "[::1]"]
 
@@ -56,6 +55,31 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
+
+# Additional django apps
+INSTALLED_APPS += [
+    "django.contrib.sites",
+    "django.contrib.sitemaps",
+]
+
+# Local apps
+INSTALLED_APPS += []
+
+# Third-party apps
+INSTALLED_APPS += [
+    # Django CORS Headers
+    "corsheaders",
+    # Django-allauth
+    "allauth",
+    "allauth.account",
+]
+
+# Development apps
+if DEBUG:
+    INSTALLED_APPS += [
+        # django debug toolbar
+        "debug_toolbar",
+    ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -103,16 +127,12 @@ WSGI_APPLICATION = "project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# https://github.com/jazzband/dj-database-url
-DATABASE_URL = env("DATABASE_URL", default="sqlite:///db.sqlite3")
-DATABASES = {
-    "default": dj_database_url.config(
-        default="postgres://postgres:postgres@db/django",
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+database = env.db("DATABASE_URL", default="sqlite:///db.sqlite3")
 
+DATABASES = {
+    "default": database,
+    "extra": env.db_url("SQLITE_URL", default="sqlite:///db.sqlite3"),
+}
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -147,13 +167,50 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "static"
+
+# This is where Django will look for additional static files (assets)
+STATICFILES_DIRS = [
+    BASE_DIR / "assets",
+]
+
+# Media
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
 # -- Logging --
-LOG_LEVEL = "info"
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": '[{asctime}] {levelname} "{name}" {module} {process:d} {thread:d} {message}',
+            "style": "{",
+            "datefmt": "%Y-%m-%d %H:%M:%S",  # match Django's built-in datetime format
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": env("DJANGO_LOG_LEVEL", default="INFO"),
+        },
+    },
+}
+# -- Django-allauth --
+AUTHENTICATION_BACKENDS = [
+    # django-allauth
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
 
 # -- Django Cors Headers --
