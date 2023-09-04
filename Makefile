@@ -177,18 +177,14 @@ pr: ensure-clean
 
 
 ## Update dev branch
-update-branch-dev:
-	@if [ "$(shell git rev-parse --abbrev-ref HEAD)" = "dev" ]; then \
-		if git diff-index --quiet HEAD --; then \
-			echo "Updating dev branch..."; \
-			git pull origin main; \
-			echo "Done!"; \
-			$(MAKE) push; \
-		else \
-			echo "Uncommitted changes found. Please commit your changes before updating dev."; \
-		fi; \
+update-branch-dev: ensure-dev-branch
+	@if git diff-index --quiet HEAD --; then \
+		echo "Updating dev branch..."; \
+		git pull origin dev; \
+		echo "Done!"; \
+		$(MAKE) push; \
 	else \
-		echo "Current branch is not dev. Please switch to the dev branch before updating dev."; \
+		echo "Uncommitted changes found. Please commit your changes before updating dev."; \
 	fi
 
 ##
