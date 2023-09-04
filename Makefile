@@ -66,7 +66,8 @@ lint:
 test:
 	@echo "Testing code..."
 	@poetry run python -m pytest
-	@poetry run project/manage.py check
+	@poetry run dj/manage.py check
+	@poetry run dj/manage.py test
 	@echo "Done!"
 
 ## Clean Python cache files
