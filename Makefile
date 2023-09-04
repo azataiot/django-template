@@ -20,13 +20,15 @@ help:
 ## Update (check for updates for django-template)
 update:
 	@echo "Checking for updates..."
-	@REMOTE_VERSION=$$(curl -s https://raw.githubusercontent.com/azataiot/django-template/main/pyproject.toml | grep '^version =' | awk -F\" '{print $$2}'); \
+	@REMOTE_VERSION=$$(curl -s https://api.github.com/repos/azataiot/django-template/releases/latest | grep '"tag_name":' | awk -F\" '{print $$4}'); \
 	LOCAL_VERSION=$$(grep '^version =' pyproject.toml | awk -F\" '{print $$2}'); \
 	if [ "$$REMOTE_VERSION" != "$$LOCAL_VERSION" ]; then \
 		echo "Update available: $$REMOTE_VERSION (current version: $$LOCAL_VERSION)"; \
 	else \
 		echo "You are using the latest version: $$LOCAL_VERSION"; \
 	fi
+
+
 
 
 # -- Dependency --
