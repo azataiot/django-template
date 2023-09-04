@@ -1,0 +1,64 @@
+name: Upgrade and Security Checks
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly at midnight
+  workflow_dispatch:  # Allows manual triggering
+
+concurrency:
+  group: upgrade-security-checks
+  cancel-in-progress: true
+
+env:
+  GH_TOKEN: ${{ github.token }}
+  GIT_USER_NAME: 'GitHub Action'
+  GIT_USER_EMAIL: 'action@github.com'
+
+jobs:
+  checks:
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: write
+    name: Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Create a new branch for checks
+        run: git checkout -b upgrade/$(date +'%Y%m%d%H%M%S')
+
+      - name: Run pyupgrade using pre-commit
+        uses: pre-commit/action@v3.0.0
+        with:
+          extra_args: pyupgrade --all-files
+
+      - name: Run django-upgrade using pre-commit
+        uses: pre-commit/action@v3.0.0
+        with:
+          extra_args: django-upgrade --all-files
+
+      - name: Run bandit using pre-commit
+        continue-on-error: true  # Continue even if bandit finds issues
+        uses: pre-commit/action@v3.0.0
+        with:
+          extra_args: bandit --all-files
+
+      - name: Commit changes
+        run: |
+          git config --global user.name $GIT_USER_NAME
+          git config --global user.email $GIT_USER_EMAIL
+          git commit -am "Apply checks" || echo "No changes to commit"
+
+      - name: Push changes
+        run: git push origin HEAD
+
+      - name: Create Pull Request or Issue based on findings
+        run: |
+          if [[ $(git diff --name-only HEAD~1) =~ "pyupgrade" || $(git diff --name-only HEAD~1) =~ "django-upgrade" ]]; then
+            gh pr create --base main --head $(git rev-parse --abbrev-ref HEAD) --title "Upgrade Checks: Apply recommended changes" --body "This PR applies the recommended changes from pyupgrade and django-upgrade." --label "upgrade"
+          elif [[ $(git diff --name-only HEAD~1) =~ "bandit" ]]; then
+            gh issue create --title "Security Checks: Potential issues found" --body "Potential security issues were found by bandit. Please review them in the associated branch." --label "security"
+          fi
