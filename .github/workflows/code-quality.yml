@@ -5,10 +5,10 @@ on:
     branches: [ 'main', 'dev' ]
     types:
       - opened
-  push:
-    branches:
-      - main
+    paths-ignore:
+      - 'docs/**'
   workflow_dispatch:
+    if: github.actor != 'dependabot[bot]'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -17,10 +17,8 @@ concurrency:
 permissions:
   contents: read
 
-
 jobs:
   linting:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.user.login != 'azataiot')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -29,9 +27,7 @@ jobs:
           python-version: '3.11'
       - uses: pre-commit/action@v3.0.0
 
-
   testing:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.user.login != 'azataiot')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -54,4 +50,29 @@ jobs:
       - name: Run the automated tests
         run: poetry run python -m pytest
       - name: Run the django checks
-        run: poetry run project/manage.py check
+        run: poetry run dj/manage.py check
+      - name: Run the django tests
+        run: poetry run dj/manage.py test
+
+  versioning:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get version from the coming branch's pyproject.toml
+        run: |
+          echo "COMING_VERSION=$(grep '^version =' pyproject.toml | awk -F\" '{print $2}')" >> $GITHUB_ENV
+
+      - name: Get main branch version
+        run: |
+          git fetch origin main:main
+          git checkout main
+          echo "MAIN_VERSION=$(grep '^version =' pyproject.toml | awk -F\" '{print $2}')" >> $GITHUB_ENV
+
+      - name: Check versions
+        run: |
+          if [ "$COMING_VERSION" == "$MAIN_VERSION" ]; then
+            echo "Error: The version in the branch is the same as the main branch. Please update the version in pyproject.toml."
+            exit 1
+          fi

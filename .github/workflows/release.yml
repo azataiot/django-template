@@ -1,0 +1,48 @@
+name: Github Release
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+    types:
+      - closed
+  workflow_dispatch:
+
+jobs:
+  release:
+    if: github.repository_owner == 'azataiot' && github.repository == 'azataiot/django-template' && github.event.pull_request.merged == true
+    env:
+      GH_TOKEN: ${{ github.token }}
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Get version from pyproject.toml
+        run: |
+          echo "VERSION=$(grep '^version =' pyproject.toml | awk -F\" '{print $2}')" >> $GITHUB_ENV
+
+      - name: Check if release exists
+        id: check_release
+        run: |
+          if gh release view "$VERSION" > /dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_ENV
+          else
+            echo "exists=false" >> $GITHUB_ENV
+          fi
+        continue-on-error: true
+
+      - name: Create a new issue if release exists
+        if: env.exists == 'true'
+        run: |
+          gh issue create --title "Release $VERSION already exists" --body "The release for version $VERSION already exists. Please review and take appropriate action." --label "release"
+
+      - name: gh release create
+        if: env.exists == 'false'
+        run: |
+          gh release create --generate-notes --title "Release $VERSION" "$VERSION"
