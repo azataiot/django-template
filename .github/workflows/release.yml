@@ -23,9 +23,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Get version from pyproject.toml
+      - name: Get version and release type from pyproject.toml
         run: |
           echo "VERSION=$(grep '^version =' pyproject.toml | awk -F\" '{print $2}')" >> $GITHUB_ENV
+          RELEASE_TYPE=$(echo $VERSION | grep -oP '(?<=-)[a-z]+' | awk 'NR==1')
+          if [[ -z "$RELEASE_TYPE" ]]; then
+            RELEASE_TYPE="final"
+          fi
+          echo "RELEASE_TYPE=$RELEASE_TYPE" >> $GITHUB_ENV
 
       - name: Check if release exists
         id: check_release
@@ -43,6 +48,6 @@ jobs:
           gh issue create --title "Release $VERSION already exists" --body "The release for version $VERSION already exists. Please review and take appropriate action." --label "release"
 
       - name: gh release create
-        if: env.exists == 'false'
+        if: env.exists == 'false' && (env.RELEASE_TYPE == 'final' || env.RELEASE_TYPE == 'post')
         run: |
           gh release create --generate-notes --title "Release $VERSION" "$VERSION"
