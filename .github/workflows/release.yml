@@ -2,8 +2,7 @@ name: Github Release
 
 on:
   pull_request:
-    branches:
-      - 'main'
+    branches: [ 'main']
     types:
       - closed
   workflow_dispatch:
@@ -26,7 +25,7 @@ jobs:
       - name: Get version and release type from pyproject.toml
         run: |
           echo "VERSION=$(grep '^version =' pyproject.toml | awk -F\" '{print $2}')" >> $GITHUB_ENV
-          RELEASE_TYPE=$(echo $VERSION | grep -oP '(?<=-)[a-z]+' | awk 'NR==1')
+          RELEASE_TYPE=$(echo $VERSION | grep -oP '(\.|-)[a-z]+' | awk 'NR==1' | sed 's/\.//')
           if [[ -z "$RELEASE_TYPE" ]]; then
             RELEASE_TYPE="final"
           fi
