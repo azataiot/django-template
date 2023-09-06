@@ -57,12 +57,9 @@ def get_base_branch(
             return "main"
 
 
-def update_version_with_sed(new_version):
-    # Construct the sed command
-    sed_command = f'sed -i "s/version = \\".*\\"/version = \\"{new_version}\\"/" {ROOT_DIR}/pyproject.toml'
-
-    # Execute the sed command
-    subprocess.run(sed_command, shell=True, check=True)
+def update_version(new_version):
+    # Use poetry to update the version
+    subprocess.run(["poetry", "version", new_version], check=True)
 
 
 def main():
@@ -83,7 +80,7 @@ def main():
             from pep440.pep440 import get_next_pep440_version
 
             new_version = get_next_pep440_version(current_version, release_type)
-            update_version_with_sed(new_version)  # Update the version in pyproject.toml
+            update_version(new_version)  # Update the version in pyproject.toml
             branch_name = f"{branch_type}/{new_version}"
 
             # Commit the changes
