@@ -2,8 +2,7 @@ name: Github Release
 
 on:
   pull_request:
-    branches:
-      - 'main'
+    branches: [ 'main']
     types:
       - closed
   workflow_dispatch:
@@ -23,7 +22,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Get version from pyproject.toml
+      - name: Get version and release type from pyproject.toml
         run: |
           echo "VERSION=$(grep '^version =' pyproject.toml | awk -F\" '{print $2}')" >> $GITHUB_ENV
           RELEASE_TYPE=$(echo $VERSION | grep -oP '(\.|-)[a-z]+' | awk 'NR==1' | sed 's/\.//')
