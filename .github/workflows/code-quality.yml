@@ -10,10 +10,6 @@ on:
   workflow_dispatch:
     if: github.actor != 'dependabot[bot]'
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 permissions:
   contents: read
 
