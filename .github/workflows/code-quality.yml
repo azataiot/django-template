@@ -54,6 +54,7 @@ jobs:
       - name: Run the django tests
         run: poetry run dj/manage.py test
 
+  #  Is this working properly?
   versioning:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
