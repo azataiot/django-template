@@ -41,13 +41,16 @@ def select_release_type():
     return options[int(choice) - 1]
 
 
-def get_base_branch(branch_type):
+def get_base_branch(
+    branch_type, release_type=None
+):  # Add release_type as an optional argument
     if branch_type == "feature":
         return "dev"
     elif branch_type == "temp":
         return subprocess.getoutput("git branch --show-current")
     elif branch_type == "release":
-        release_type = select_release_type()
+        if not release_type:  # If release_type is not provided, get it
+            release_type = select_release_type()
         if release_type in ["final", "a", "b", "rc", "dev"]:
             return "dev"
         elif release_type == "post":
@@ -56,17 +59,22 @@ def get_base_branch(branch_type):
 
 def main():
     try:
+        release_type = None
+        new_version = None
         current_version = get_current_version()
-        branch_type = select_branch_type()
-        base_branch = get_base_branch(branch_type)
-        new_version = None  # Initialize to avoid the warning
+        branch_type = select_branch_type()  # ["feature", "release", "temp"]
+        if branch_type == "release":
+            release_type = (
+                select_release_type()
+            )  # ["final", "a", "b", "rc", "post", "dev"]
+        base_branch = get_base_branch(
+            branch_type, release_type
+        )  # Pass release_type as an argument
 
         if branch_type == "release":
-            import increment_version
+            from pep440.pep440 import get_next_pep440_version
 
-            new_version = increment_version.increment_version(
-                current_version, select_release_type()
-            )
+            new_version = get_next_pep440_version(current_version, release_type)
             branch_name = f"{branch_type}/{new_version}"
 
             # Commit the changes

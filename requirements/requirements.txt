@@ -195,6 +195,9 @@ oauthlib==3.2.2 ; python_version >= "3.11" and python_version < "4.0" \
 packaging==23.1 ; python_version >= "3.11" and python_version < "4.0" \
     --hash=sha256:994793af429502c4ea2ebf6bf664629d07c1a9fe974af92966e4b8d2df7edc61 \
     --hash=sha256:a392980d2b6cffa644431898be54b0045151319d1e7ec34f0cfed48767dd334f
+pep440-utility==0.1.0 ; python_version >= "3.11" and python_version < "4.0" \
+    --hash=sha256:2169e4c51debfa29d6ff4e3b3dd317ed663ad3e1feba34417d35e8bb45c9a303 \
+    --hash=sha256:9cb1d0dfda847056600b137340ef77a1c0de2a966ec4bb1c1a91f03a4a5ba42e
 pillow==10.0.0 ; python_version >= "3.11" and python_version < "4.0" \
     --hash=sha256:00e65f5e822decd501e374b0650146063fbb30a7264b4d2744bdd7b913e0cab5 \
     --hash=sha256:040586f7d37b34547153fa383f7f9aed68b738992380ac911447bb78f2abe530 \
