@@ -28,7 +28,7 @@ jobs:
           echo "VERSION=$(grep '^version =' pyproject.toml | awk -F\" '{print $2}')" >> $GITHUB_ENV
           RELEASE_TYPE=$(echo $VERSION | grep -oP '(\.|-)[a-z]+' | awk 'NR==1' | sed 's/\.//')
           if [[ -z "$RELEASE_TYPE" ]]; then
-             RELEASE_TYPE="final"
+            RELEASE_TYPE="final"
           fi
           echo "RELEASE_TYPE=$RELEASE_TYPE" >> $GITHUB_ENV
 
