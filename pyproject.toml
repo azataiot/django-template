@@ -29,7 +29,7 @@ django-debug-toolbar = "^4.2.0"
 
 
 [tool.poetry.group.docs.dependencies]
-mkdocs-material = "^9.2.6"
+mkdocs-material = "^9.4.6"
 
 
 [tool.ruff]
